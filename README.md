@@ -15,6 +15,7 @@ This repo contains a boilerplate setup for spinning up 3 Docker containers:
 1. Build the images with `docker compose build`
 1. Start the containers with `docker compose up`.  To run in detached mode, run `docker compose up -d`. 
 
-
+# Project Overview:
+TravEasy is a comprehensive application designed to streamline and simplify the entire trip planning process. Whether you're embarking on a solo adventure, organizing a family vacation, or planning a business trip, TravEasy has you covered.
 
 
