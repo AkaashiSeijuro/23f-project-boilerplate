@@ -4,39 +4,28 @@ from src import db
 
 reservations = Blueprint('reservations', __name__)
 
-# Routes for Reservations
-@reservations.route('/reservations', methods=['GET'])
-def get_reservations():
-    # Logic to retrieve all reservations
-    return jsonify(reservations)
+# Get all the hotels and their info from the database
+@reservations.route('/hotel', methods=['GET'])
+def get_hotels(): 
+    # get a cursor object from the database
+    cursor = db.get_db().cursor()
 
-@reservations.route('/reservations/<reservation_id>', methods=['GET'])
-def get_reservation(reservation_id):
-    # Logic to retrieve a specific reservation
-    return jsonify(reservations)
+    # use cursor to query the database for a list of hotels
+    cursor.execute('SELECT hotel_id, amenities, street, city, state, zipcode, duration, rating FROM hotel')
 
-@reservations.route('/reservations', methods=['POST'])
-def create_reservation():
-    # Logic to create a new reservation
-    data = request.get_json()
-    # Process data and create reservation
-    return jsonify(new_reservation), 201
+    # grab the column headers from the returned data
+    column_headers = [x[0] for x in cursor.description]
 
-@reservations.route('/reservations/<reservation_id>', methods=['PUT'])
-def update_reservation(reservation_id):
-    # Logic to update an existing reservation
-    data = request.get_json()
-    # Process data and update reservation
-    return jsonify(updated_reservation)
+    # create an empty dictionary object to use in
+    # putting column headers together with data
+    json_data = []
 
-@reservations.route('/reservations/<reservation_id>', methods=['DELETE'])
-def delete_reservation(reservation_id):
-    # Logic to delete a reservation
-    # Delete reservation with ID reservation_id
-    return jsonify({'message': 'Reservation deleted'}), 204  # 204 for successful deletion
+    # fetch all the data from the cursor
+    theData = cursor.fetchall()
 
-# Routes for Hotel
-@reservations.route('/hotels', methods=['GET'])
-def get_hotels():
-    # Logic to retrieve all hotels
-    return jsonify(hotels)
+    # for each of the rows, zip the data elements together with
+    # the column headers.
+    for row in theData:
+        json_data.append(dict(zip(column_headers, row)))
+
+    return jsonify(json_data)
