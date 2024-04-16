@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
@@ -29,3 +29,20 @@ def get_flights():
         json_data.append(dict(zip(column_headers, row)))
 
     return jsonify(json_data)
+
+# Gets all the info for the flight with this flight_no
+@transportation.route('/flight/<flight_no>', methods=['GET'])
+def get_flights_detail (flight_no):
+
+    query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flights WHERE flight_no = ' + str(flight_no)
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
