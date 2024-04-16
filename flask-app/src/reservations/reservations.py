@@ -108,3 +108,30 @@ def get_room_types():
 
     return jsonify(json_data)
 
+# Gets all the cuisines, their info, and the restaurants with the cuisine from the database
+@reservations.route('/Cuisine_Type', methods=['GET'])
+def get_cuisines():
+    # get a cursor object from the database
+    cursor = db.get_db().cursor()
+
+    # use cursor to query the database for a list of cuisines
+    cursor.execute('SELECT Cuisine_ID, Type, Description, Restaurant_ID, Name FROM Cuisine_Type '
+                   + 'JOIN Restaurant_Cuisine ON Restaurant_Cuisine.Cuisine_ID = Cuisine_Type.Cuisine_ID'
+                   + 'JOIN Restaurants ON Restaurants.Restaurant_ID = Restaurant_Cuisine.Restaurant_ID')
+
+    # grab the column headers from the returned data
+    column_headers = [x[0] for x in cursor.description]
+
+    # create an empty dictionary object to use in
+    # putting column headers together with data
+    json_data = []
+
+    # fetch all the data from the cursor
+    theData = cursor.fetchall()
+
+    # for each of the rows, zip the data elements together with
+    # the column headers.
+    for row in theData:
+        json_data.append(dict(zip(column_headers, row)))
+
+    return jsonify(json_data)
