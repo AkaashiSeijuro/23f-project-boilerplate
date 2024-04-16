@@ -30,7 +30,7 @@ def get_flights():
 
     return jsonify(json_data)
 
-# Gets all the info for the flight with this flight_no
+# Gets all the info for the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
 def get_ticket_detail (flight_no):
 
@@ -45,6 +45,18 @@ def get_ticket_detail (flight_no):
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
+
+# Update the class of the ticket with this TicketID
+@transportation.route('/flight_ticket/<TicketID>', methods=['PUT'])
+def update_ticket_class(TicketID):
+    cust_data = request.get_json()
+
+    cursor = db.get_db().cursor()
+    cursor.execute('UPDATE flight_ticket SET Class=%s WHERE TicketID=%s',
+                   (cust_data.get('Class'), TicketID))
+    db.get_db().commit()
+
+    return jsonify({'message': 'Ticket class updated successfully'})
 
 # Create a new ticket
 @transportation.route('/flight_ticket', methods=['POST'])
