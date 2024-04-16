@@ -31,7 +31,7 @@ def get_flights():
     return jsonify(json_data)
 
 # Gets all the info for the flight with this flight_no
-@transportation.route('/flight/<flight_no>', methods=['GET'])
+@transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
 def get_flights_detail (flight_no):
 
     query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flights WHERE flight_no = ' + str(flight_no)
@@ -46,3 +46,35 @@ def get_flights_detail (flight_no):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
+# Create a new ticket
+@transportation.route('/flight_ticket', methods=['POST'])
+def add_new_ticket():
+    
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    # extracting the variable 
+    id = the_data['TicketID']
+    seatClass = the_data['Class']
+    customerName = the_data['customerName']
+    cost = the_data['cost']
+    customerID = the_data['CustomerID']
+    flight_no = the_data['flight_no']
+
+    # constructing the query
+    query = 'insert into flight_ticket (TicketID, Class, customerName, cost, CustomerID, flight_no) values ("'
+    query += str(id) + '", "'
+    query += seatClass + '", "'
+    query += customerName + '", "'
+    query += str(cost) + '", "'
+    query += str(customerID) + '", "'
+    query += str(flight_no) + '")'
+    current_app.logger.info(query)
+
+    # executing and comitting the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
