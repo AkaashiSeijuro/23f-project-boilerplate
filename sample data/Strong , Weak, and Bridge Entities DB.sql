@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS TravEasy_weak_entities (
     activities_cost INTEGER,
     customerID VARCHAR(255),
     customer_demographics_type TEXT
-   
+ );
+
 -- Create table TravEasy_bridge_entities    
 CREATE TABLE IF NOT EXISTS TravEasy_bridge_entities (
     activitiesID VARCHAR(255),
