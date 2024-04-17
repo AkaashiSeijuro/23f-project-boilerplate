@@ -23,7 +23,11 @@ TravEasy is a comprehensive application designed to streamline and simplify the 
 
 ## Features
 Transportation Guidance: Find the best routes and modes of transportation for your journey.
+
 Activity Recommendations: Discover exciting activities and attractions at your destination.
+
 Payment Fee Information: Get insights into payment fees and currency exchange rates.
+
 User-friendly Interface: Our app is designed to be easy to use, making travel planning hassle-free.
+
 Real-time Updates: Stay informed with real-time updates on transportation schedules and availability.
