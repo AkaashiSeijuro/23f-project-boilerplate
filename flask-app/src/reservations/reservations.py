@@ -1,8 +1,48 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
 reservations = Blueprint('reservations', __name__)
+
+# Add a new customer to the hotel
+@reservations.route('/hotel', methods=['POST'])
+def add_customer_to_hotel():
+    # collecting data from the request object
+    cust_data = request.get_json()
+    current_app.logger.info(cust_data)
+
+    # extracting the variable
+    customerID = cust_data['CustomerID']
+    email = cust_data['Email']
+    name = cust_data['Name']
+    street = cust_data['Street']
+    city = cust_data['City']
+    state = cust_data['State']
+    zipcode = cust_data['ZipCode']
+    restaurantID = cust_data['Restaurant_ID']
+    hotelID = cust_data['Hotel_id']
+
+    # constructing the query
+    query = 'insert into hotel (CustomerID, Email, Name, Street, City, State, ZipCode, Restaurant_ID, Hotel_id) values ("'
+    query += str(customerID) + '", "'
+    query += email + '", "'
+    query += name + '", "'
+    query += street + '", "'
+    query += city + '", "'
+    query += state + '", "'
+    query += str(zipcode) + '", "'
+    query += str(restaurantID) + '", "'
+    query += str(hotelID) + '")'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    return 'Success!'
+
+# Delete a customer from the hotel with this Hotel
 
 # Get all the hotels and their info from the database
 @reservations.route('/hotel', methods=['GET'])
@@ -55,6 +95,28 @@ def get_restaurants():
         json_data.append(dict(zip(column_headers, row)))
 
     return jsonify(json_data)
+
+# Updates the time at which the reservation is booked at the restaurant with 
+# the given Reservation_ID
+@reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['PUT'])
+def update_reservation_time(Booked_ID):
+    cust_data = request.get_json()
+
+    cursor = db.get_db().cursor()
+    cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s WHERE Booked_ID=%s',
+                     (cust_data.get('Datetime'), Booked_ID))
+    db.get_db().commit()
+
+    return jsonify({'message': 'Restaurant reservation time updated successfully'})
+
+# Deletes the reservation at the restaurant with the given Reservation_ID
+@reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['DELETE'])
+def delete_reservation(Booked_ID):
+    cursor = db.get_db().cursor()
+    cursor.execute('DELETE FROM Restaurants_Booked WHERE Booked_ID=%s', (Booked_ID,))
+    db.get_db().commit()
+
+    return jsonify({'message': 'Restaurant reservation deleted successfully'})
 
 # Gets all the activities and their info from the database
 @ reservations.route('/activities', methods=['GET'])
