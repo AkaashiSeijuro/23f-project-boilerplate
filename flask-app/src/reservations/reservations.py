@@ -56,6 +56,19 @@ def get_restaurants():
 
     return jsonify(json_data)
 
+# Updates the time at which the reservation is booked at the restaurant with 
+# the given Reservation_ID
+@reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['PUT'])
+def update_restaurant_time(Booked_ID):
+    cust_data = request.get_json()
+
+    cursor = db.get_db().cursor()
+    cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s WHERE Booked_ID=%s',
+                     (cust_data.get('Datetime'), Booked_ID))
+    db.get_db().commit()
+
+    return jsonify({'message': 'Restaurant reservation time updated successfully'})
+
 # Gets all the activities and their info from the database
 @ reservations.route('/activities', methods=['GET'])
 def get_activities():
