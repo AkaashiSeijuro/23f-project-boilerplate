@@ -1,8 +1,46 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
 reservations = Blueprint('reservations', __name__)
+
+# Add a new customer to the hotel
+@reservations.route('/hotel', methods=['POST'])
+def add_hotel():
+    # collecting data from the request object
+    cust_data = request.get_json()
+    current_app.logger.info(cust_data)
+
+    # extracting the variable
+    customerID = cust_data['CustomerID']
+    email = cust_data['Email']
+    name = cust_data['Name']
+    street = cust_data['Street']
+    city = cust_data['City']
+    state = cust_data['State']
+    zipcode = cust_data['ZipCode']
+    restaurantID = cust_data['Restaurant_ID']
+    hotelID = cust_data['Hotel_id']
+
+    # constructing the query
+    query = 'insert into hotel (CustomerID, Email, Name, Street, City, State, ZipCode, Restaurant_ID, Hotel_id) values ("'
+    query += str(customerID) + '", "'
+    query += email + '", "'
+    query += name + '", "'
+    query += street + '", "'
+    query += city + '", "'
+    query += state + '", "'
+    query += str(zipcode) + '", "'
+    query += str(restaurantID) + '", "'
+    query += str(hotelID) + '")'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    return 'Success!'
 
 # Get all the hotels and their info from the database
 @reservations.route('/hotel', methods=['GET'])
