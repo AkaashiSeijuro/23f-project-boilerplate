@@ -58,6 +58,15 @@ def update_ticket_class(TicketID):
 
     return jsonify({'message': 'Ticket class updated successfully'})
 
+# Delete the ticket with this TicketID
+@transportation.route('/flight_ticket/<TicketID>', methods=['DELETE'])
+def delete_ticket(TicketID):
+    cursor = db.get_db().cursor()
+    cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID,))
+    db.get_db().commit()
+
+    return jsonify({'message': 'Ticket deleted successfully'})
+
 # Create a new ticket
 @transportation.route('/flight_ticket', methods=['POST'])
 def add_new_ticket():
