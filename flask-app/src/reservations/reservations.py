@@ -105,8 +105,15 @@ def update_reservation_time(Booked_ID):
     cust_data = request.get_json()
     if cust_data:
         cursor = db.get_db().cursor()
-        cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s WHERE Booked_ID=%s',
-                       (cust_data.get('Datetime'), Booked_ID))
+        
+        # added this
+        Restaurant_ID = cust_data["Restaurant_ID"]
+        Participants = cust_data["Participants"]
+        Datetime = cust_data["Datetime"]
+        
+        # added rest id, participants, and date
+        cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s, Participants=%w, Restaurant_ID=%s WHERE Booked_ID=%s',
+                       (cust_data.get('Restaurant_ID', 'Participants', 'Datetime'), Booked_ID))
         db.get_db().commit()
         return jsonify({'message': 'Restaurant reservation time updated successfully'}), 200
     else:
