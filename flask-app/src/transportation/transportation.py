@@ -123,8 +123,11 @@ def get_navigation_routes():
     # the column headers.
     for row in theData:
         json_data.append(dict(zip(column_headers, row)))
-
-    return jsonify(json_data)
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    the_response = json.dump(json_data)
+    return the_response
 
 # Gets all payments and their info from the database
 def get_payment_info():
