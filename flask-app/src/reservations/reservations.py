@@ -51,7 +51,7 @@ def get_hotels():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of hotels
-    cursor.execute('SELECT hotel_id, amenities, street, city, state, zipcode, duration, rating FROM hotel')
+    cursor.execute('SELECT hotel_id, amentities, street, city, state, zipcode, duration, rating FROM hotel')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
