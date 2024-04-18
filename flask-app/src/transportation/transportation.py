@@ -34,7 +34,7 @@ def get_flights():
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
 def get_ticket_detail(TicketID):
 
-    query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flight_ticket WHERE TicketID = ' + str(TicketID)
+    query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flight_ticket WHERE TicketID = {0}' .format(TicketID)
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
@@ -62,7 +62,7 @@ def update_ticket_class(TicketID):
 @transportation.route('/flight_ticket/<TicketID>', methods=['DELETE'])
 def delete_ticket(TicketID):
     cursor = db.get_db().cursor()
-    cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID,))
+    cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID))
     db.get_db().commit()
 
     return jsonify({'message': 'Ticket deleted successfully'})
