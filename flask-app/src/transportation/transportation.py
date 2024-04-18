@@ -32,7 +32,7 @@ def get_flights():
 
 # Gets all the info for the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
-def get_ticket_detail (flight_no):
+def get_ticket_detail (TicketID):
 
     query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flights WHERE flight_no = ' + str(flight_no)
     current_app.logger.info(query)
@@ -123,10 +123,9 @@ def get_navigation_routes():
     # the column headers.
     for row in theData:
         json_data.append(dict(zip(column_headers, row)))
-    the_response = make_response(jsonify(json_data))
+    the_response = make_response(jsonify(json.dump((json_data))))
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
-    the_response = json.dump(json_data)
     return the_response
 
 # Gets all payments and their info from the database
