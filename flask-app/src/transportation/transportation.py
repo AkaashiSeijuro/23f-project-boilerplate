@@ -126,7 +126,7 @@ def get_navigation_routes():
     the_response = make_response(jsonify((json_data)))
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
-    json.dumps(the_response)
+    json.dumps(the_response, indent=4, sort_keys=True, default=str)
     return the_response
 
 # Gets all payments and their info from the database
