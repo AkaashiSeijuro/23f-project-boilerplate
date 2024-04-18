@@ -9,8 +9,7 @@ customers = Blueprint('customers', __name__)
 @customers.route('/customers', methods=['GET'])
 def get_customers():
     cursor = db.get_db().cursor()
-    cursor.execute('select company, last_name,\
-        first_name, job_title, business_phone from customers')
+    cursor.execute('select * from customer')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -36,14 +35,15 @@ def get_customer(userID):
     the_response.mimetype = 'application/json'
     return the_response
 
+
 # PUT route to update customer information
 @customers.route('/customers/<int:userID>', methods=['PUT'])
 def update_customer(userID):
     data = request.get_json()
     if data:
         cursor = db.get_db().cursor()
-        cursor.execute('UPDATE customers SET CustomerID=%s, Email=%s, Name=%s, Street=%s, City=%s, State=%s, ZipCode=%s, Restaurant_ID=%s, Hotel_id=%s WHERE id=%s',
-                       (data.get('CustomerID'), data.get('Email'), data.get('Name'), data.get('Street'),
+        cursor.execute('UPDATE customer SET Email=%s, Name=%s, Street=%s, City=%s, State=%s, ZipCode=%s, Restaurant_ID=%s, Hotel_id=%s WHERE CustomerID=%s',
+                       (data.get('Email'), data.get('Name'), data.get('Street'),
                         data.get('City'), data.get('State'), data.get('ZipCode'), data.get('Restaurant_ID'), data.get('Hotel_id'), userID))
         db.get_db().commit()
         return jsonify({'message': 'Customer information updated successfully'}), 200
