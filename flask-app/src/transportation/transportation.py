@@ -30,20 +30,26 @@ def get_flights():
 
     return jsonify(json_data)
 
-# Gets all the info for the ticket with this TicketID
-@transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
-def get_ticket_detail(TicketID):
+
+@transportation.route('/flight_ticket', methods=['GET'])
+def get_ticket_detail():
+    # Get a cursor object from the database
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM flight_ticket WHERE TicketID=%s', (TicketID))
+
+    # Execute database query to retrieve all ticket information
+    cursor.execute('SELECT * FROM flight_ticket')
+
+    # Fetch the column headers from the cursor description
     row_headers = [x[0] for x in cursor.description]
-    json_data = []
+
+    # Fetch all the data from the cursor
     the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+
+    # Create a list of dictionaries containing ticket information
+    json_data = [dict(zip(row_headers, row)) for row in the_data]
+
+    # Return JSON response with ticket information and status code 200 (OK)
+    return jsonify(json_data), 200
 
 # Update the class of the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['PUT'])
