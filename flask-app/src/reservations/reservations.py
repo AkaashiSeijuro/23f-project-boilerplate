@@ -67,8 +67,10 @@ def get_hotels():
     # the column headers.
     for row in theData:
         json_data.append(dict(zip(column_headers, row)))
-
-    return jsonify(json_data)
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 # Gets all the restaurants and their info from the database
 @reservations.route('/Restaurants', methods=['GET'])
