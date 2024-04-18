@@ -51,7 +51,7 @@ def get_hotels():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of hotels
-    cursor.execute('SELECT hotel_id, amenities, street, city, state, zipcode, duration, rating FROM hotel')
+    cursor.execute('SELECT hotel_id, amentities, street, city, state, zipcode, duration, rating FROM hotel')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
@@ -67,8 +67,10 @@ def get_hotels():
     # the column headers.
     for row in theData:
         json_data.append(dict(zip(column_headers, row)))
-
-    return jsonify(json_data)
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 # Gets all the restaurants and their info from the database
 @reservations.route('/Restaurants', methods=['GET'])
@@ -101,13 +103,21 @@ def get_restaurants():
 @reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['PUT'])
 def update_reservation_time(Booked_ID):
     cust_data = request.get_json()
-
-    cursor = db.get_db().cursor()
-    cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s WHERE Booked_ID=%s',
-                     (cust_data.get('Datetime'), Booked_ID))
-    db.get_db().commit()
-
-    return jsonify({'message': 'Restaurant reservation time updated successfully'})
+    if cust_data:
+        cursor = db.get_db().cursor()
+        
+        # added this
+        Restaurant_ID = cust_data["Restaurant_ID"]
+        Participants = cust_data["Participants"]
+        Datetime = cust_data["Datetime"]
+        
+        # added rest id, participants, and date
+        cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s, Participants=%w, Restaurant_ID=%s WHERE Booked_ID=%s',
+                       (cust_data.get('Restaurant_ID', 'Participants', 'Datetime'), Booked_ID))
+        db.get_db().commit()
+        return jsonify({'message': 'Restaurant reservation time updated successfully'}), 200
+    else:
+        return jsonify({'error': 'No data provided for update'}), 400
 
 # Deletes the reservation at the restaurant with the given Reservation_ID
 @reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['DELETE'])
@@ -177,9 +187,8 @@ def get_cuisines():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of cuisines
-    cursor.execute('SELECT Cuisine_ID, Type, Description, Restaurant_ID, Name FROM Cuisine_Type '
-                   + 'JOIN Restaurant_Cuisine ON Restaurant_Cuisine.Cuisine_ID = Cuisine_Type.Cuisine_ID'
-                   + 'JOIN Restaurants ON Restaurants.Restaurant_ID = Restaurant_Cuisine.Restaurant_ID')
+    cursor.execute('SELECT Cuisine_ID, Type, Description, Restaurants.Restaurant_ID, Name FROM Cuisine_Type '
+                   + 'JOIN Restaurants ON Restaurants.Restaurant_ID = Cuisine_Type.Restaurant_ID')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]

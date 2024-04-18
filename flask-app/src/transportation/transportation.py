@@ -32,19 +32,18 @@ def get_flights():
 
 # Gets all the info for the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
-def get_ticket_detail (flight_no):
-
-    query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flights WHERE flight_no = ' + str(flight_no)
-    current_app.logger.info(query)
-
+def get_ticket_detail(TicketID):
     cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
+    cursor.execute('SELECT * FROM flight_ticket WHERE TicketID=%s', (TicketID))
+    row_headers = [x[0] for x in cursor.description]
     json_data = []
     the_data = cursor.fetchall()
     for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 # Update the class of the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['PUT'])
@@ -62,7 +61,7 @@ def update_ticket_class(TicketID):
 @transportation.route('/flight_ticket/<TicketID>', methods=['DELETE'])
 def delete_ticket(TicketID):
     cursor = db.get_db().cursor()
-    cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID,))
+    cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID))
     db.get_db().commit()
 
     return jsonify({'message': 'Ticket deleted successfully'})
@@ -107,7 +106,7 @@ def get_navigation_routes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of navigation routes
-    cursor.execute('SELECT Navigation_ID, Routing, Estimated_time, Fare, Distance, Transportation_Method FROM navigation')
+    cursor.execute('SELECT Navigation_ID, Routing, Estimated_time, Fare, Distance, Transportation_Method FROM Navigation')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
@@ -122,9 +121,15 @@ def get_navigation_routes():
     # for each of the rows, zip the data elements together with
     # the column headers.
     for row in theData:
-        json_data.append(dict(zip(column_headers, row)))
+        # Convert estimated_time to a string before adding it to the dictionary
+        row_dict = dict(zip(column_headers, row))
+        row_dict['Estimated_time'] = str(row_dict['Estimated_time'])
+        json_data.append(row_dict)
 
-    return jsonify(json_data)
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 # Gets all payments and their info from the database
 def get_payment_info():
