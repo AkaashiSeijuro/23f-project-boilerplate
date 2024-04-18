@@ -34,16 +34,16 @@ def get_flights():
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
 def get_ticket_detail(TicketID):
 
-    query = 'SELECT flight_no, seats, duration, departure_location, arrival_time, arrival_location, departure_time, airline_name FROM flight_ticket WHERE TicketID = {0}' .format(TicketID)
+    query = 'SELECT TicketID, flight_no, CustomerID, cost, customerName, Class FROM flight_ticket WHERE TicketID = {0}' .format(TicketID)
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
+    row_headers = [x[0] for x in cursor.description]
     json_data = []
     the_data = cursor.fetchall()
     for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
+        json_data.append(dict(zip(row_headers, row)))
     return jsonify(json_data)
 
 # Update the class of the ticket with this TicketID
