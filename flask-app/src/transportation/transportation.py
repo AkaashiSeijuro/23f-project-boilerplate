@@ -107,7 +107,7 @@ def get_navigation_routes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of navigation routes
-    cursor.execute('SELECT Navigation_ID, Routing, Estimated_time, Fare, Distance, Transportation_Method FROM navigation')
+    cursor.execute('SELECT Navigation_ID, Routing, Estimated_time, Fare, Distance, Transportation_Method FROM Navigation')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
