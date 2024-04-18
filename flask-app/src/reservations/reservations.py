@@ -181,7 +181,7 @@ def get_cuisines():
     # use cursor to query the database for a list of cuisines
     cursor.execute('SELECT Cuisine_ID, Type, Description, Restaurant_ID, Name FROM Cuisine_Type '
                    + 'JOIN Restaurant_Cuisine ON Restaurant_Cuisine.Cuisine_ID = Cuisine_Type.Cuisine_ID'
-                   + 'JOIN Restaurants ON Restaurants.restaurant_Id = Restaurant_Cuisine.restaurant_Id')
+                   + 'JOIN Restaurants ON Restaurants.restaurantId = Restaurant_Cuisine.restaurantId')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
