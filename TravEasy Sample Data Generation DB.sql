@@ -73,9 +73,9 @@ CREATE TABLE IF NOT EXISTS flight_ticket (
     flight_no INT,
     PRIMARY KEY (TicketID),
     FOREIGN KEY(CustomerID) REFERENCES customer(CustomerID)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY(flight_no) REFERENCES flights(flight_no)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Strong Entity
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS Restaurants_Booked (
     Datetime DATETIME,
     PRIMARY KEY (Booked_ID, Restaurant_ID),
     FOREIGN KEY (Restaurant_ID) REFERENCES Restaurants(Restaurant_ID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Strong Entity
