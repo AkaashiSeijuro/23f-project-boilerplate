@@ -34,7 +34,7 @@ def get_flights():
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
 def get_ticket_detail(TicketID):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM flight_ticket')
+    cursor.execute('SELECT * FROM flight_ticket WHERE TicketID=%s', (TicketID))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     the_data = cursor.fetchall()
