@@ -103,13 +103,14 @@ def get_restaurants():
 @reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['PUT'])
 def update_reservation_time(Booked_ID):
     cust_data = request.get_json()
-
-    cursor = db.get_db().cursor()
-    cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s WHERE Booked_ID=%s',
-                     (cust_data.get('Datetime'), Booked_ID))
-    db.get_db().commit()
-
-    return jsonify({'message': 'Restaurant reservation time updated successfully'})
+    if cust_data:
+        cursor = db.get_db().cursor()
+        cursor.execute('UPDATE Restaurants_Booked SET Datetime=%s WHERE Booked_ID=%s',
+                       (cust_data.get('Datetime'), Booked_ID))
+        db.get_db().commit()
+        return jsonify({'message': 'Restaurant reservation time updated successfully'}), 200
+    else:
+        return jsonify({'error': 'No data provided for update'}), 400
 
 # Deletes the reservation at the restaurant with the given Reservation_ID
 @reservations.route('/Restaurants_Booked/<Booked_ID>', methods=['DELETE'])
