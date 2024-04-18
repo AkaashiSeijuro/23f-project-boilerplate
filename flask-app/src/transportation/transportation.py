@@ -122,11 +122,14 @@ def get_navigation_routes():
     # for each of the rows, zip the data elements together with
     # the column headers.
     for row in theData:
-        json_data.append(dict(zip(column_headers, row)))
-    the_response = make_response(jsonify((json_data)))
+        # Convert estimated_time to a string before adding it to the dictionary
+        row_dict = dict(zip(column_headers, row))
+        row_dict['Estimated_time'] = str(row_dict['Estimated_time'])
+        json_data.append(row_dict)
+
+    the_response = make_response(jsonify(json_data))
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
-    json.dumps(the_response, indent=4, sort_keys=True, default=str)
     return the_response
 
 # Gets all payments and their info from the database
