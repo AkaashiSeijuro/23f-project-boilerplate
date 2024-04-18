@@ -34,7 +34,7 @@ def get_flights():
 @transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
 def get_ticket_detail(TicketID):
 
-    query = 'SELECT TicketID, flight_no, CustomerID, cost, customerName, Class FROM flight_ticket WHERE TicketID = {0}' .format(TicketID)
+    query = 'SELECT TicketID, flight_no, CustomerID, cost, customerName, Class FROM flight_ticket WHERE TicketID = ' + str(TicketID)
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
