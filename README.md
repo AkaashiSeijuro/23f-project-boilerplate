@@ -1,4 +1,5 @@
 #  TravEasy: SQL / Flask / Appsmith Boilerplate Project
+### Team Member(s): Vincent Demaisip, Wei Ding, Miguel Gonzales, Eric Wu, and Gregory Zeng
 
 This repo contains a boilerplate setup for spinning up 3 Docker containers: 
 1. A MySQL 8 container for obvious reasons
