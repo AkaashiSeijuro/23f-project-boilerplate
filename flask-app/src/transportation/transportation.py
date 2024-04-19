@@ -30,20 +30,26 @@ def get_flights():
 
     return jsonify(json_data)
 
-# Gets all the info for the ticket with this TicketID
-@transportation.route('/flight_ticket/<TicketID>', methods=['GET'])
-def get_ticket_detail(TicketID):
+
+@transportation.route('/flight_ticket', methods=['GET'])
+def get_ticket_detail():
+    # Get a cursor object from the database
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM flight_ticket WHERE TicketID=%s', (TicketID))
+
+    # Execute database query to retrieve all ticket information
+    cursor.execute('SELECT * FROM flight_ticket')
+
+    # Fetch the column headers from the cursor description
     row_headers = [x[0] for x in cursor.description]
-    json_data = []
+
+    # Fetch all the data from the cursor
     the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+
+    # Create a list of dictionaries containing ticket information
+    json_data = [dict(zip(row_headers, row)) for row in the_data]
+
+    # Return JSON response with ticket information and status code 200 (OK)
+    return jsonify(json_data), 200
 
 # Update the class of the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['PUT'])
@@ -69,35 +75,34 @@ def delete_ticket(TicketID):
 # Create a new ticket
 @transportation.route('/flight_ticket', methods=['POST'])
 def add_new_ticket():
-    
-    # collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
+    try:
+        # Check if request contains JSON data
+        if not request.json:
+            return jsonify({'error': 'No JSON data received'}), 400
 
-    # extracting the variable 
-    id = the_data['TicketID']
-    seatClass = the_data['Class']
-    customerName = the_data['customerName']
-    cost = the_data['cost']
-    customerID = the_data['CustomerID']
-    flight_no = the_data['flight_no']
+        # Extract data from JSON request
+        ticket_data = request.json
+        id = ticket_data.get('TicketID')
+        seat_class = ticket_data.get('Class')
+        customer_name = ticket_data.get('customerName')
+        cost = ticket_data.get('cost')
+        customer_id = ticket_data.get('CustomerID')
+        flight_no = ticket_data.get('flight_no')
 
-    # constructing the query
-    query = 'insert into flight_ticket (TicketID, Class, customerName, cost, CustomerID, flight_no) values ("'
-    query += str(id) + '", "'
-    query += seatClass + '", "'
-    query += customerName + '", "'
-    query += str(cost) + '", "'
-    query += str(customerID) + '", "'
-    query += str(flight_no) + '")'
-    current_app.logger.info(query)
+        # Validate required fields
+        if not all([id, seat_class, customer_name, cost, customer_id, flight_no]):
+            return jsonify({'error': 'Missing required fields'}), 400
 
-    # executing and comitting the insert statement
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
-    
-    return 'Success!'
+        # Construct and execute SQL query
+        query = f'INSERT INTO flight_ticket (TicketID, Class, customerName, cost, CustomerID, flight_no) VALUES ({id}, "{seat_class}", "{customer_name}", {cost}, {customer_id}, {flight_no})'
+        cursor = db.get_db().cursor()
+        cursor.execute(query)
+        db.get_db().commit()
+
+        return jsonify({'success': True, 'message': 'Ticket added successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 # Gets all navigation routes and their info from the database
 @transportation.route('/Navigation', methods=['GET'])
