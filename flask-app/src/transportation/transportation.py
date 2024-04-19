@@ -66,12 +66,14 @@ def update_ticket_class(TicketID):
 # Delete the ticket with this TicketID
 @transportation.route('/flight_ticket/<TicketID>', methods=['DELETE'])
 def delete_ticket(TicketID):
-    cursor = db.get_db().cursor()
-    cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID))
-    db.get_db().commit()
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute('DELETE FROM flight_ticket WHERE TicketID=%s', (TicketID,))
+        db.get_db().commit()
 
-    return jsonify({'message': 'Ticket deleted successfully'})
-
+        return jsonify({'message': 'Ticket deleted successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # Return the error message and set status code to 500
 # Create a new ticket
 @transportation.route('/flight_ticket', methods=['POST'])
 def add_new_ticket():
@@ -137,12 +139,13 @@ def get_navigation_routes():
     return the_response
 
 # Gets all payments and their info from the database
+@transportation.route('/payment', methods=['GET'])
 def get_payment_info():
     # get a cursor object from the database
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of payments
-    cursor.execute('SELECT paymentID, payment_type, amount, transaction_assured, theft_protection, TicketID FROM payments')
+    cursor.execute('SELECT * FROM payment')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
