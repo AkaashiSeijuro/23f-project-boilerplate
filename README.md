@@ -37,3 +37,12 @@ TravEasy is a comprehensive application designed to streamline and simplify the 
 
 ## Link to Youtube Video for Presentation
 https://youtu.be/KUEOwaEvWYU
+
+## Docker
+- In terminal git clone our repository with HTTP
+- There is a password_root.txt and password.txt file in the secrets folder for this repository.
+- When opening datasource, the password will be needed with port being 3200.
+- db folder and src contains our routes.
+- In terminal run the command "docker compose up -d" to open all the containers.
+- When running Docker it should open this repository with containers of db, web, and app smith.
+- On a tab open, localhost:8080 if everything works successfully and enjoy our application!
