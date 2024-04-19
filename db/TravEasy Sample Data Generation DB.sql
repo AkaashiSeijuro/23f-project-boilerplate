@@ -36,9 +36,9 @@ CREATE TABLE IF NOT EXISTS customer (
     Hotel_id INT,
     PRIMARY KEY (CustomerID),
     FOREIGN KEY (Restaurant_ID) REFERENCES Restaurants(Restaurant_ID)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (Hotel_id) REFERENCES hotel(hotel_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Strong Entity
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS flights (
     airline_name       VARCHAR(50),
     PRIMARY KEY (flight_no),
     FOREIGN KEY (airline_name) REFERENCES airline (airline_name)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Strong Entity
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS payment (
     TicketID INT,
     PRIMARY KEY (paymentID),
     FOREIGN KEY (TicketID) REFERENCES flight_ticket(TicketID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Strong Entitiy
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS class (
     class_type VARCHAR(50),
     PRIMARY KEY (class_id),
     FOREIGN KEY (flight_no) REFERENCES flights(flight_no)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Weak Entity
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS Cuisine_Type (
     Type VARCHAR(50),
     PRIMARY KEY (Cuisine_ID, Restaurant_ID),
     FOREIGN KEY (Restaurant_ID) REFERENCES Restaurants(Restaurant_ID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Weak Entity
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS Navigation (
     Transportation_Method VARCHAR(50),
     CustomerID INT,
     FOREIGN KEY (CustomerID) REFERENCES customer(CustomerID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Weak Entity
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS room_type (
     hotel_id INT,
     PRIMARY KEY (Name, type_id),
     FOREIGN KEY(hotel_id) REFERENCES hotel(hotel_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Bridge Entity
@@ -164,9 +164,9 @@ CREATE TABLE IF NOT EXISTS Restaurant_Cuisine (
     Restaurant_ID INT,
     PRIMARY KEY (Cuisine_ID, Restaurant_ID),
     FOREIGN KEY (Cuisine_ID) REFERENCES Cuisine_Type(Cuisine_ID)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (Restaurant_ID) REFERENCES Restaurants(Restaurant_ID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Bridge Entity
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS Navigation_Transportation_Method (
     Transportation_Method VARCHAR(50),
     PRIMARY KEY (Navigation_ID, Transportation_Method),
     FOREIGN KEY (Navigation_ID) REFERENCES Navigation(Navigation_ID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Bridge Entity
@@ -184,9 +184,9 @@ CREATE TABLE IF NOT EXISTS Attends (
     CustomerID INT,
     PRIMARY KEY (activities_id, CustomerID),
     FOREIGN KEY (activities_id) REFERENCES activities(activities_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (CustomerID) REFERENCES customer(CustomerID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Weak Entity
